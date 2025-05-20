@@ -15,7 +15,7 @@ Ex: Models.py
 ### SQL Alchemy
 
 * Sessions - Essentially a workspace for talking to the database; like opening a document, editing it, saving it and closing
-  * When you a request comes in your create a **session** this session is used to query, add, update, or delete data
+  * When a request comes in, you create a **session** this session is used to query, add, update, or delete data
   * you commit changes if needed and **close** the session when request is done; resources 
 
 Imports:
@@ -28,3 +28,8 @@ Imports:
   * request validation - in FastAPI, makes sure a request is in the right format; would throw an error
 * parse data (convert JSON, dicts, etc to Python objects)
 * serialize data (convert python objects to JSON responses)
+
+### Routers Directory
+
+Contains all the API Endppoints related to data. i.e getting, creating, updating, or deleting players.
+

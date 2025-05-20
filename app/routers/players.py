@@ -1,19 +1,29 @@
 # Player-related endpoints 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .. import models, schemas, database
+from typing import List #lets FastAPI know to expect a list; Ex: List[PlayerOut]
+from .. import crud, models, schemas, database
 
-router = APIRouter(prefix="/players", tag=["Players"])
+#all routes in this file will start with /players; tags=["Players"] groups these endpoints in Swagger UI
+router = APIRouter(prefix="/players", tags=["Players"])
 
-#the depends(database.SessionLocal) says: "Create a new session for this request"
-@router.get("/")
-def get_players(db: Session = Depends(database.SessionLocal)):
-    return db.query(models.Player).all()
+#the depends(database.get_db) says: "Create a new session for this request"
+# a get request to /players; creates a session called db and queries all players from the database
+# converts all of them to JSON
+@router.get("/", response_model=List[schemas.PlayerOut])
+def read_players(db: Session = Depends(database.get_db)):
+    return crud.get_players(db)
 
-@router.post("/")
-def create_player(player: schemas.PlayerCreate, db: Session = Depends(database.SessionLocal)):
-    new_player = models.Player(**player.dict())
-    db.add(new_player)
-    db.commit()
-    db.refresh(new_player)
-    return new_player
+#a get request to /players/1 will return the player with the id 1 as a SQLAlchemy object
+@router.get("/{player_id}", response_model=schemas.PlayerOut)
+def read_player(player_id: int, db: Session = Depends(database.get_db)): #player id is at front because it is non-default
+    player = crud.get_player(db, player_id) 
+    if not player:
+        return None
+    return player
+
+#POST request to /players; returns newly created player (PlayerOut)
+# must match the PlayerCreate Schema and accepts the player object from the request and db session
+@router.post("/", response_model=schemas.PlayerOut)
+def create_player(player: schemas.PlayerCreate, db: Session = Depends(database.get_db)):
+    crud.create_player(db, player)
