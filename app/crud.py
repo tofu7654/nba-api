@@ -44,3 +44,46 @@ def delete_player(db: Session, player_id: int):
     db.commit()
     return player
 
+# Team CRUD Functions
+
+#create team
+def create_team(db: Session, team: schemas.TeamCreate):
+    new_team = models.Team(**team.model_dump)
+    db.add(new_team)
+    db.commit()
+    db.refresh(new_team)
+    return new_team
+
+
+#This function reads all the teams
+def get_teams(db: Session):
+    return db.query(models.Team).all()
+
+#this function reads a team by a given id
+def get_team(db: Session, team_id: int):
+    return db.query(models.Team).filter(models.Team == team_id).first()
+
+def update_team(db: Session, team_id: int, updated_team: schemas.PlayerCreate):
+    team = get_team(db, team_id)
+    if not team:
+        return None
+    
+    #updates the fields of the team
+    for key, value in updated_team.model_dump.items():
+        setattr(team, key, value)
+    
+    db.commit()
+    db.refresh(team) #reloads the latest DB state into python object
+    return team
+
+def delete_team(db: Session, team_id: int):
+    #first get the team and see if it exists 
+    team = get_team(db, team_id)
+    if not team:
+        return None
+    db.delete(team)
+    db.commit()
+    return team
+
+
+

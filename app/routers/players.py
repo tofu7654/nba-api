@@ -27,3 +27,21 @@ def read_player(player_id: int, db: Session = Depends(database.get_db)): #player
 @router.post("/", response_model=schemas.PlayerOut)
 def create_player(player: schemas.PlayerCreate, db: Session = Depends(database.get_db)):
     crud.create_player(db, player)
+
+@router.put("/{player_id}", response_model=schemas.PlayerOut)
+def updated_player(player_id: int, player: schemas.PlayerCreate, db: Session = Depends(database.get_db)):
+    updated_player = crud.update_player(db, player_id, player)
+    if not updated_player:
+        raise HTTPException(status_code=404, detail="Player not found")
+    return updated_player
+
+#Delete player
+@router.delete("/{player_id}", response_model=schemas.PlayerOut)
+def delete_player(player_id: int, db: Session = Depends(database.get_db)):
+    deleted = crud.delete_player(player_id, db)
+    if not deleted: 
+        raise HTTPException(status_code=404, detail="Player not found")
+    return deleted
+
+
+    

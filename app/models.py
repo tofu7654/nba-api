@@ -21,7 +21,7 @@ class Team(Base): #defines a class called Team. "Base" tells SQL alchemy to trea
     #this defines a relationship to the "player" table. Says "a team has many players"
     #back_populates = "team" means the Player class must also declare a matching relationship
     #this is a one-to-many relationship (i.e one team has many players); bc there is no foreign key
-    players = relationship("Player", back_populates="team")
+    players = relationship("Player", back_populates="Team")
 
 # Player table
 class Player(Base):
@@ -33,7 +33,7 @@ class Player(Base):
     #there is a foreign key here, so this is the many side
     #foreign key is used on the many side
     team_id = Column(Integer, ForeignKey("teams.id"))
-    team = relationship("Team", back_populates="players")
+    team = relationship("Team", back_populates="Player")
 
 # Stats table
 class Stat(Base):

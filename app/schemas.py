@@ -7,7 +7,7 @@ class PlayerBase(BaseModel):
     name: str
     age: int
     position: str
-    team_id: int
+    player_id: int
 
 #Schema for creating a new player (POST)
 class PlayerCreate(PlayerBase):
